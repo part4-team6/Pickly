@@ -1,17 +1,17 @@
 import Image from "next/image";
 
-import { productService } from "../api";
-import ProductIdReviewButton from "./ProductIdReviewButton";
+import { productService } from "../../api";
+import ProductIdReviewButton from "./ProductIdDetailButton";
 
-import HeartInactive from "../../../../public/icons/heart-inactive.svg";
-import KakaoLink from "../../../../public/images/kakao-link.png";
-import LinkShare from "../../../../public/images/link-share.png";
+import HeartInactive from "../../../../../public/icons/heart-inactive.svg";
+import KakaoLink from "../../../../../public/images/kakao-link.png";
+import LinkShare from "../../../../../public/images/link-share.png";
 
 interface ProductIdReviewProps {
   params: { id: string };
 }
 
-export default async function ProductIdReview({
+export default async function ProductIdDetail({
   params,
 }: ProductIdReviewProps) {
   const { data: product } = await productService.getProductsId(

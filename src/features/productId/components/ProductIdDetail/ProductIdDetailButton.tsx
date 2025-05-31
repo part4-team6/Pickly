@@ -2,9 +2,9 @@
 
 import BaseButton from "@/components/shared/BaseButton";
 import TypeButton from "@/components/shared/TypeButton";
-import useGetUser from "../hooks/useGetUser";
+import useGetUser from "../../hooks/useGetUser";
 
-export default function ProductIdReviewButton({
+export default function ProductIdDetailButton({
   productUserId,
 }: {
   productUserId: number;

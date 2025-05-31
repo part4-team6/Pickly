@@ -1,17 +1,19 @@
 import React from "react";
 
-import { productService } from "../api";
+import { productService } from "../../api";
 import ProductIdStatsBone from "./ProductIdStatsBone";
 
-import Heart from "../../../../public/icons/Heart.png";
-import Star from "../../../../public/icons/Star.png";
-import Talk from "../../../../public/icons/Talk.png";
+import Heart from "../../../../../public/icons/Heart.png";
+import Star from "../../../../../public/icons/Star.png";
+import Talk from "../../../../../public/icons/Talk.png";
 
 interface ProductIdReviewProps {
   params: { id: string };
 }
 
-export default async function ProductIdStats({ params }: ProductIdReviewProps) {
+export default async function generateStaticParams({
+  params,
+}: ProductIdReviewProps) {
   const { data: product } = await productService.getProductsId(
     Number(params.id)
   );

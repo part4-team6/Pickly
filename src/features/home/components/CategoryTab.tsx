@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { redirect } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 
 interface Props {
   placeholder: string;
@@ -8,12 +8,15 @@ interface Props {
 }
 
 const CategoryTab = ({ placeholder, selected }: Props) => {
+  const router = useRouter();
+
   const textColor = selected ? "#F1F1F5" : "#6E6E82";
   const backGroundColor = selected ? "#252530" : "#1C1C22";
   console.log(`${placeholder} :${selected}`);
 
   const handleSelect = (category: string) => {
-    redirect(`/homepage/${encodeURIComponent(category)}`);
+    router.push(`/homepage/${encodeURIComponent(category)}`);
+    router.refresh();
   };
 
   return (

@@ -42,7 +42,7 @@ export default function useLikeButton() {
   //   const { reviews } = useGetProductsIdReviews(); -> 로그인 되면 다시 수정
 
   const likeMutation = useMutation({
-    mutationFn: () => reviewService.postReviews(mockData.list[0].id),
+    mutationFn: () => reviewService.postReviewsLike(mockData.list[0].id),
     onSuccess: () => {
       setIsLikedState(true);
       setIsLikeCount((prevCount) => prevCount + 1);

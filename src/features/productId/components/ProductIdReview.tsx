@@ -8,14 +8,14 @@ import KakaoLink from "../../../../public/images/kakao-link.png";
 import LinkShare from "../../../../public/images/link-share.png";
 
 interface ProductIdReviewProps {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }
 
 export default async function ProductIdReview({
   params,
 }: ProductIdReviewProps) {
   const { data: product } = await productService.getProductsId(
-    Number(params.id)
+    Number((await params).id)
   );
 
   if (!product) return <div>상품 정보가 없습니다.</div>;

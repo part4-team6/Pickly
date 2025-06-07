@@ -1,4 +1,3 @@
-
 "use client";
 import Category from "@/features/home/components/Category";
 import Link from "next/link";
@@ -56,7 +55,6 @@ const Header = () => {
         </Link>
 
         <div className="relative md:flex flex-row items-center justify-center lg:gap-[60px] md:gap-[30px] hidden">
-
           {isAuthenticated ? (
             <>
               <Link
@@ -88,7 +86,6 @@ const Header = () => {
               </Link>
             </>
           )}
-
         </div>
 
         <Link

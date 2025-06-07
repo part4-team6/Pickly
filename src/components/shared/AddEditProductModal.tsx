@@ -1,5 +1,5 @@
 "use client";
-import React, { use } from "react";
+import React, { use, useState } from "react";
 import { IoClose } from "react-icons/io5";
 import { InputField } from "../input/InputField";
 import CategoryDropDown from "./CategoryDropDown";
@@ -9,12 +9,15 @@ import { useRouter } from "next/navigation";
 import useModalStore from "@/features/home/modals/store/modalStore";
 import postProduct from "@/features/home/services/postProduct";
 import { getCookie } from "cookies-next";
+import postImage from "@/features/home/services/postImage";
 
 interface Props {
   buttonPlaceholder: string;
 }
 
 const AddEditProductModal = ({ buttonPlaceholder }: Props) => {
+  const [file, setFile] = useState<File | null>(null);
+
   const router = useRouter();
 
   const {
@@ -36,10 +39,11 @@ const AddEditProductModal = ({ buttonPlaceholder }: Props) => {
   };
 
   const chooseFile = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const fileURL = URL.createObjectURL(file);
+    const selected = e.target.files?.[0];
+    if (selected) {
+      const fileURL = URL.createObjectURL(selected);
       setImage(fileURL);
+      setFile(selected);
     }
   };
 
@@ -57,26 +61,34 @@ const AddEditProductModal = ({ buttonPlaceholder }: Props) => {
     if (res.status === 200) {
       const { accessToken } = await res.json();
 
-      const response = await postProduct({
-        categoryId,
-        name,
-        description,
-        image,
+      const responseFile = await postImage({
+        file,
         accessToken,
       });
 
-      if (response?.status === 200) {
-        setName(null);
-        setCategoryId(null);
-        setClickedValue("카테고리 선택");
-        setDescription(null);
-        setImage(null);
+      if (responseFile) {
+        const response = await postProduct({
+          categoryId,
+          name,
+          description,
+          image: responseFile.url,
+          accessToken,
+        });
 
-        handleClose();
+        if (response?.status === 200) {
+          setName(null);
+          setCategoryId(null);
+          setClickedValue("카테고리 선택");
+          setDescription(null);
+          setImage(null);
+          setFile(null);
+
+          handleClose();
+        }
       }
     } else {
-        console.error("로그인이 되어 있지 않음: 상품 넣기 실패");
-        // 로그인 해달라는 모달 설정
+      console.error("로그인이 되어 있지 않음: 상품 넣기 실패");
+      // 로그인 해달라는 모달 설정
     }
   };
 

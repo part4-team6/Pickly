@@ -1,7 +1,7 @@
 "use client";
 import MoreProducts from "@/features/home/components/MoreProducts";
 import SortComponent from "@/features/home/components/SortComponent";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { CiSearch } from "react-icons/ci";
 
 const SearchPage = ({
@@ -11,6 +11,8 @@ const SearchPage = ({
     [key: string]: "recent" | "reviewCount" | "rating";
   }>;
 }) => {
+  const inputRef = useRef<HTMLInputElement>(null);
+
   const [search, setSearch] = useState("");
   const [inputValue, setInputValue] = useState("");
   const [params, setParams] = useState<{
@@ -29,7 +31,7 @@ const SearchPage = ({
   const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setSearch(inputValue);
-    setInputValue("");
+    inputRef.current?.blur();
   };
 
   return (
@@ -41,6 +43,7 @@ const SearchPage = ({
           className="bg-[#252530] lg:w-[400px] lg:h-[56px] md:w-[300px] md:h-[50px] w-[250px] h-[40px] pr-[20px] md:pl-[60px] pl-[50px] py-[16px] text-[#6E6E82] rounded-[28px]"
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
+          ref={inputRef}
         />
         <CiSearch
           size={24}

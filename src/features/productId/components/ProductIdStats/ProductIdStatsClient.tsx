@@ -31,7 +31,7 @@ export default function ProductStatsClient({
   }, [product]);
 
   return (
-    <div className=" md:h-[244px] h-full text-amber-50 flex items-center justify-center flex-col gap-[29px]">
+    <div className=" md:h-[244px] h-full text-amber-50 flex items-center flex-col gap-[29px]">
       <div className="lg:text-[20px] md:text-[16px] font-normal">상품통계</div>
       <div className="flex justify-between align-center md:flex-row flex-col gap-[15px]">
         <ProductIdStatsBone

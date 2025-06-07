@@ -20,7 +20,7 @@ export default function useLikeButton(
   });
 
   const unlikeMutation = useMutation({
-    mutationFn: () => reviewService.deleteReviews(reviewId),
+    mutationFn: () => reviewService.deleteReviewsLike(reviewId),
     onSuccess: () => {
       setIsLikedState(false);
       setIsLikeCount((prev) => prev - 1);

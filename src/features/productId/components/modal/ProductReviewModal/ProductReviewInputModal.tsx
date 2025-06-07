@@ -16,13 +16,23 @@ interface ImageData {
 interface ProductReviewInputModalProps {
   onTextChange: (text: string) => void;
   onImageUrlsChange: (images: string[]) => void;
+  initialText?: string;
+  initialImages?: string[];
 }
 export default function ProductReviewInputModal({
   onTextChange,
   onImageUrlsChange,
+  initialText = "",
+  initialImages = [],
 }: ProductReviewInputModalProps) {
-  const [text, setText] = useState("");
-  const [images, setImages] = useState<ImageData[]>([]);
+  const [text, setText] = useState(initialText);
+  const [images, setImages] = useState<ImageData[]>(() =>
+    initialImages.map((url) => ({
+      id: String(Date.now() + Math.random()),
+      url,
+      file: new File([], ""),
+    }))
+  ); // 초기 URL을 ImageData 형태로 변환
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [editingId, setEditingId] = useState<string | null>(null);
 
@@ -79,6 +89,7 @@ export default function ProductReviewInputModal({
   useEffect(() => {
     onImageUrlsChange(images.map((img) => img.url));
   }, [images, onImageUrlsChange]);
+
   return (
     <div className="flex flex-col gap-[20px] h-fit">
       {/* 텍스트 입력 나중에 컴포넌트로 교체예쩡 텍스트필드 오류 있음 */}

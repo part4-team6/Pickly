@@ -4,10 +4,14 @@ import { FaStar, FaRegStar } from "react-icons/fa";
 
 interface Props {
   onChange?: (rating: number) => void;
+  initialRating?: number;
 }
 
-export default function ProductReviewStarModal({ onChange }: Props) {
-  const [rating, setRating] = useState(0);
+export default function ProductReviewStarModal({
+  onChange,
+  initialRating,
+}: Props) {
+  const [rating, setRating] = useState(initialRating || 0);
   const [hover, setHover] = useState<number | null>(null);
 
   // 별점이 반쪽인지 확인하는 함수

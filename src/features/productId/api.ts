@@ -132,8 +132,45 @@ class ReviewService {
     );
   }
 
-  deleteReviews(reviewId: number) {
+  deleteReviewsLike(reviewId: number) {
     return axios.delete(`${BASE_URL}/reviews/${reviewId}/like`, {
+      headers: {
+        Accept: "application/json",
+        Authorization: `Bearer ${TOKEN}`,
+      },
+    });
+  }
+
+  async patchReviews({
+    reviewId,
+    content,
+    rating,
+    images,
+  }: {
+    reviewId: number;
+    content: string;
+    rating: number;
+    images: string[];
+  }) {
+    const formattedImages = images.map((url) => ({ source: url }));
+    return axios.patch(
+      `${BASE_URL}/reviews/${reviewId}`,
+      {
+        content,
+        rating,
+        images: formattedImages,
+      },
+      {
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${TOKEN}`,
+        },
+      }
+    );
+  }
+
+  deleteReviews(reviewId: number) {
+    return axios.delete(`${BASE_URL}/reviews/${reviewId}`, {
       headers: {
         Accept: "application/json",
         Authorization: `Bearer ${TOKEN}`,

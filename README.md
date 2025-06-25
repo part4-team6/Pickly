@@ -49,12 +49,12 @@ https://pickly-gamma.vercel.app/
 
 - 유효성 검사와 Zustand를 활용해 로그인 시 사용자 정보를 클라이언트 상태로 관리합니다.
 - 로그인 시 Next.js API Routes 기반 자체 백엔드에서 인증을 처리하며, 토큰은 HTTP-only 쿠키에 저장해 보안성을 높였습니다.
-![login](https://github.com/user-attachments/assets/b0ad7843-5f3c-45f6-a3dc-4e3bdb5d54d1)
+![image](https://github.com/user-attachments/assets/b0ad7843-5f3c-45f6-a3dc-4e3bdb5d54d1)
 
 ### 🧭 메인 페이지
 
 - 상품 검색, 카테고리별 정렬, 무한 스크롤 로딩 기능 구현
-![main](https://github.com/user-attachments/assets/82e65a8e-2630-4dd9-acee-be95c1fa7a19)
+![image](https://github.com/user-attachments/assets/82e65a8e-2630-4dd9-acee-be95c1fa7a19)
 
 - **상품 추가 기능**으로 직접 상품을 등록할 수 있습니다.
 ![add-product](https://github.com/user-attachments/assets/94dc0b5f-bd62-464c-903c-b45be65c2873)

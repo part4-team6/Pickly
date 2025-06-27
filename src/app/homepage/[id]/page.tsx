@@ -28,8 +28,6 @@ export async function generateMetadata({
   };
 }
 
-// next 15 부터 동적 라우팅은 비동기로 처리된다
-// 따라서 params도 promise 형태로 감싸야 한다
 export default async function CategoryPage({
   params,
   searchParams,
@@ -59,9 +57,7 @@ export default async function CategoryPage({
     앱: 10,
   };
 
-  // console.log("현재 카테고리:", decodeParams);
   const categoryNumber = categoryIndexMap[decodeParams] ?? undefined;
-  // console.log("매핑된 번호:", categoryNumber);
 
   if (categoryNumber >= 1) {
     products = await getProductsFetch({
@@ -69,8 +65,6 @@ export default async function CategoryPage({
       categoryId: categoryNumber,
     });
   }
-
-  // console.log(products);
 
   return (
     <div className="overflow-x-visible">

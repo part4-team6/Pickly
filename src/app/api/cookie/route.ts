@@ -12,10 +12,9 @@ export async function GET() {
     const csrfTokenFromHeader = headerStore.get("x-csrf-token");
 
     if (!accessToken) {
-      // 랜딩 페이지로 이동하는 로직 추가
       return NextResponse.json(
         { success: false, message: "accessToken not found" },
-        { status: 401 } // 이 상태면 로그아웃
+        { status: 401 }
       );
     }
 

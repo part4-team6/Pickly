@@ -1,6 +1,6 @@
 "use client";
 import { User } from "@/features/Profile/types/user";
-import defaultProfileImage from "../../../../public/defaultProfileImage.jpeg"; //임시 defaultImage//
+import defaultProfileImage from "../../../../public/defaultProfileImage.jpeg";
 import Image from "next/image";
 import FollowCounts from "./FollowCounts";
 import FollowButton from "./FollowButton";

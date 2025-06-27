@@ -30,12 +30,8 @@ const FloatingButton = () => {
       const data = await res.json();
 
       if (!data.success) {
-        // 로그인이 안 되었다는 모달 띄우기 위한 상태 변경
         setIsLogin(true);
       } else {
-        // const params = new URLSearchParams(window.location.search);
-        // params.set("modal", "true");
-        // router.push(`?${params.toString()}`, { scroll: false });
         setIsModalOpen(true);
       }
     } catch (error) {

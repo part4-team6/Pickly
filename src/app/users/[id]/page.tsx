@@ -18,17 +18,13 @@ export default async function UserPage({
   // 기본적으로 유저 프로필 정보는 조회
   const user = await getUserProfile(userId);
 
-  // 내 프로필 정보는 "로그인했을 때만" 가져옴
   let myProfile = null;
   try {
     myProfile = await getMyProfile();
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  } catch (e) {
-    // 비로그인 사용자라면 무시
+  } catch {
     myProfile = null;
   }
 
-  // 로그인했고, URL의 id와 내 id가 같으면 마이페이지로 리다이렉트
   if (myProfile?.id === userId) {
     redirect("/mypage");
   }

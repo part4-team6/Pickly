@@ -1,4 +1,3 @@
-"use client";
 import Header from "@/components/shared/Header";
 import CompareClient from "@/features/compare/components/CompareClient";
 

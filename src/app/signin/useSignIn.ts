@@ -8,11 +8,9 @@ export function useLoginMutation(
 ) {
   const mutation = useMutation({
     mutationFn: async (form: LoginForm) => {
-      // 1. 로그인 시도 (백엔드 인증 서버)
       const res = await apiInstance.post<AuthResponse>("/auth/signIn", form);
       const data = res.data;
 
-      // 2. 받은 토큰을 Next.js API Route로 전달
       await fetch("/api/login", {
         method: "POST",
         headers: {
@@ -44,7 +42,6 @@ export function useOAuthLoginMutation(
 ) {
   const mutation = useMutation({
     mutationFn: async ({ redirectUri, token, provider }: OAuthLoginForm) => {
-      // 1. 백엔드에 OAuth 로그인 요청
       const res = await apiInstance.post<AuthResponse>(
         `/auth/signIn/${provider}`,
         {
@@ -55,7 +52,6 @@ export function useOAuthLoginMutation(
 
       const data = res.data;
 
-      // 2. 받은 accessToken을 Next.js API Route로 전달하여 쿠키 저장
       await fetch("/api/login", {
         method: "POST",
         headers: {

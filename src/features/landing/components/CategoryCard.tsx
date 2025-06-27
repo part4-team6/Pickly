@@ -13,15 +13,14 @@ interface Props {
   className?: string;
 }
 
-//lg:w-[517px] lg:h-[517px] md:w-[221px] md:h-[221px] w-[98px] h-[98px]
-// lg:text-[48px] md:text-[16px] text-[8px]
-// lg:text-[20px] md:text-[8px] text-[4px]
-
-// 카드 설명 배경  lg:max-h-[146px] md:max-h-[73px] max-h-[36px]
-
-// 버튼 lg:w-[48px] lg:h-[48px] md:w-[24px] md:h-[24px] w-[12px] h-[12px]
-
-const CategoryCard = ({ category, img, description, color, url, className }: Props) => {
+const CategoryCard = ({
+  category,
+  img,
+  description,
+  color,
+  url,
+  className,
+}: Props) => {
   return (
     <Link href={url}>
       <motion.div

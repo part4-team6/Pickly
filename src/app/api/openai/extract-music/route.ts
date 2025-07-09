@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import OpenAI from "openai";
+import { GoogleGenAI } from "@google/genai";
 
 export async function POST(request: Request) {
   try {
@@ -11,62 +11,55 @@ export async function POST(request: Request) {
       );
     }
 
-    const openai = new OpenAI({
-      apiKey: process.env.OPENAI_API_KEY,
+    const ai = new GoogleGenAI({
+      apiKey: process.env.NEXT_PUBLIC_GOOGLE_API_KEY!,
     });
 
-    const completion = await openai.chat.completions.create({
-      model: "gpt-4o",
-      messages: [
-        {
-          role: "system",
-          content:
-            'You are an assistant that extracts artist and album names. Always respond with a JSON object like {"artist":"...","album":"..."}. If the album name is not directly mentioned, use your knowledge to infer and fill in the official album name.',
+    const prompt = `
+너는 아티스트명과 앨범명을 추출하는 도우미야. 항상 {"artist":"...","album":"..."} 형식의 JSON으로만 답변해줘.
+앨범명이 명확하지 않으면 네 지식을 사용해서 공식 앨범명을 채워줘.
+스포티파이에 등록된 공식 이름을 우선으로 써.
+영문 이름이면 영어로, 한국어 공식명이 있으면 한국어로 써줘.
+
+예시:
+입력: "Project X
+Ken Carson의 앨범으로, Playboi Carti의 레이블 Opium을 통해 출시됨. Star Boy와 Outtatown이 주로 프로듀싱을 담당함. 장르: Rage, Pop-Trap. 대표곡: 'Rock n Roll', 'Run + Ran', 'Change'."
+출력: {"artist":"Ken Carson","album":"Project X"}
+
+입력: "상품명: HIT ME HARD AND SOFT, 설명: 빌리 아일리시의 3집 앨범은 2024년 5월 17일 발매되었으며..."
+출력: {"artist":"Billie Eilish","album":"HIT ME HARD AND SOFT"}
+
+입력: "상품명: LILAC, 설명: 아이유의 5집 앨범은 2021년에 발매됐다."
+출력: {"artist":"아이유","album":"LILAC"}
+
+입력: "상품명: WINGS, 설명: 방탄소년단의 2집 앨범은 2016년에 발매됐다."
+출력: {"artist":"BTS","album":"WINGS"}
+
+입력: "${text}"
+`;
+
+    const response = await ai.models.generateContent({
+      model: "gemini-2.5-flash",
+      contents: prompt,
+      config: {
+        thinkingConfig: {
+          thinkingBudget: 0,
         },
-        {
-          role: "user",
-          // ai에게 명령하는 코드 (정확도를 높이고 싶으면 더 자세히 작성해야 함)
-          content: `
-  Given the following text, always use the first line (product name) as the most important clue.
-  Prioritize the product name (first line) when inferring the official artist and album name.
-  You may use your knowledge and external information to infer the correct names.
-  Ultimately, always output the official artist and album names as registered on Spotify.
-  If the official Spotify name is in English, use the English name. If not, use the official Korean name.
-  Always respond ONLY with a JSON object like {"artist":"...","album":"..."}.
-
-  예시:
-  입력: "Project X
-  Ken Carson의 앨범으로, Playboi Carti의 레이블 Opium을 통해 출시됨. Star Boy와 Outtatown이 주로 프로듀싱을 담당함. 장르: Rage, Pop-Trap. 대표곡: 'Rock n Roll', 'Run + Ran', 'Change'."
-  출력: {"artist":"Ken Carson","album":"Project X"}
-
-  입력: "상품명: HIT ME HARD AND SOFT, 설명: 빌리 아일리시의 3집 앨범은 2024년 5월 17일 발매되었으며..."
-  출력: {"artist":"Billie Eilish","album":"HIT ME HARD AND SOFT"}
-
-  입력: "상품명: LILAC, 설명: 아이유의 5집 앨범은 2021년에 발매됐다."
-  출력: {"artist":"아이유","album":"LILAC"}
-
-  입력: "상품명: WINGS, 설명: 방탄소년단의 2집 앨범은 2016년에 발매됐다."
-  출력: {"artist":"BTS","album":"WINGS"}
-
-  텍스트: ${text}
-            `,
-        },
-      ],
+      },
     });
 
-    const result = completion.choices[0].message?.content || "";
-
-    return NextResponse.json({ result });
+    const resultText = response.text ?? "";
+    return NextResponse.json({ result: resultText.trim() });
   } catch (error) {
     const err = error as Error;
-    console.error("OpenAI API 호출 실패:", {
+    console.error("Gemini API 호출 실패:", {
       message: err.message,
       name: err.name,
       stack: err.stack,
       cause: err.cause,
     });
     return NextResponse.json(
-      { error: "OpenAI API 호출 실패", detail: err.message },
+      { error: "Gemini API 호출 실패", detail: err.message },
       { status: 500 }
     );
   }

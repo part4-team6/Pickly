@@ -3,7 +3,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 
-import CloseX from "../../../../../../public/icons/close-x.png";
+import CloseX from "@/../public/icons/close-x.png";
 
 interface BaseModalProps {
   isOpen: boolean;

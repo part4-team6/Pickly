@@ -79,7 +79,7 @@ export default function ProductSpotifyClient({
   return (
     <div
       onClick={handleGoToSpotifyAlbum}
-      className="group w-full cursor-pointer  text-white flex  items-center  md:justify-end justify-start lg:p-5 md:p-3 p-2 md:gap-2 gap-[10px] bg-[#1F1F1F] rounded-lg hover:bg-[#282828] transition-all duration-300 ease-in-out md:flex-col flex-row"
+      className=" cursor-pointer w-full md:w-auto text-white flex  items-center  md:justify-end justify-start lg:p-5 md:p-3 p-2 md:gap-2 gap-[10px] bg-[#1F1F1F] rounded-lg hover:bg-[#282828] transition-all duration-300 ease-in-out md:flex-col flex-row"
     >
       <div className="relative  lg:w-[250px] md:w-[180px] w-[50px] lg:h-[250px] md:h-[180px] h-[50px]">
         <Image

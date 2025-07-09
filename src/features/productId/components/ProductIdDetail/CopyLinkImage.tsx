@@ -5,10 +5,11 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
 
-import KakaoLink from "../../../../../public/icons/kakako-link.png";
-import LinkShare from "../../../../../public/icons/link-share.png";
-import Trash from "../../../../../public/icons/trash-icon.png";
+import KakaoLink from "@/../public/icons/kakako-link.png";
+import LinkShare from "@/../public/icons/link-share.png";
+import Trash from "@/../public/icons/trash-icon.png";
 
+import useDeleteModal from "@/features/productId/hooks/useDeleteModal";
 import { productService } from "../../api";
 import { checkLoginStatus } from "../../hooks/checkLogin";
 import { GetProductIdDetail } from "../../types";
@@ -27,30 +28,13 @@ export default function CopyLinkImage({
 }: {
   product: GetProductIdDetail;
 }) {
-  const [modalopen, setModalOpen] = useState(false);
-  const [comparePlusModalMessage, setComparePlusModalMessage] = useState("");
-  const [comparePlusButtonMessage, setComparePlusButtonMessage] = useState("");
   const router = useRouter();
+  const { modalOpen, setModalOpen, handleDeleteClick } = useDeleteModal();
   const [isOwner, setIsOwner] = useState(false);
   const { user } = useGetUser();
   const productId = product.id;
 
-  useEffect(() => {
-    if (
-      typeof window !== "undefined" &&
-      window.Kakao &&
-      !window.Kakao.isInitialized()
-    ) {
-      const kakaoKey = process.env.NEXT_PUBLIC_KAKAO_JS_KEY;
-
-      if (kakaoKey) {
-        window.Kakao.init(kakaoKey);
-      } else {
-        console.error("Kakao JS 키가 없습니다. .env.local을 확인해주세요.");
-      }
-    }
-  }, []);
-
+  // 링크 복사 기능
   const handleCopyLink = () => {
     const currentUrl = window.location.href;
     navigator.clipboard
@@ -64,6 +48,7 @@ export default function CopyLinkImage({
       });
   };
 
+  // 카카오톡 공유 기능
   const handleKakaoShare = () => {
     if (window.Kakao) {
       window.Kakao.Share.sendDefault({
@@ -71,7 +56,7 @@ export default function CopyLinkImage({
         content: {
           title: "Pickly에서 상품을 확인해보세요!",
           description: "리뷰도 많고 평점도 확인할 수 있어요.",
-          imageUrl: "https://yourdomain.com/sample-image.jpg",
+          imageUrl: product.image,
           link: {
             mobileWebUrl: window.location.href,
             webUrl: window.location.href,
@@ -90,19 +75,10 @@ export default function CopyLinkImage({
     }
   };
 
-  const handleDeleteClick = () => {
-    setComparePlusModalMessage("정말 삭제하시겠습니까?");
-    setComparePlusButtonMessage("삭제하기");
-    setModalOpen(true);
-  };
-
   // 삭제 실행
   const handleConfirmDelete = async () => {
-    const { isLoggedIn, accessToken } = await checkLoginStatus();
-    if (!isLoggedIn || !accessToken) {
-      toast.error("로그인이 필요합니다.");
-      return;
-    }
+    const { accessToken } = await checkLoginStatus();
+    if (!accessToken) return;
 
     try {
       await productService.deleteProductsId(productId, accessToken);
@@ -113,6 +89,7 @@ export default function CopyLinkImage({
     }
   };
 
+  // 현재 로그인한 사용자가 상품 작성자인지 확인
   useEffect(() => {
     const checkOwner = async () => {
       const { isLoggedIn } = await checkLoginStatus();
@@ -123,6 +100,23 @@ export default function CopyLinkImage({
     };
     checkOwner();
   }, [user, product.writerId]);
+
+  // 카카오 JS SDK 초기화
+  useEffect(() => {
+    if (
+      typeof window !== "undefined" &&
+      window.Kakao &&
+      !window.Kakao.isInitialized()
+    ) {
+      const kakaoKey = process.env.NEXT_PUBLIC_KAKAO_JS_KEY;
+
+      if (kakaoKey) {
+        window.Kakao.init(kakaoKey);
+      } else {
+        console.error("Kakao JS 키가 없습니다. .env.local을 확인해주세요.");
+      }
+    }
+  }, []);
 
   return (
     <>
@@ -160,12 +154,12 @@ export default function CopyLinkImage({
           />
         </div>
       </div>
-      {modalopen && (
+      {modalOpen && (
         <ProductComparePlusModal
           open
           setOpen={() => setModalOpen(false)}
-          message={comparePlusModalMessage}
-          buttonText={comparePlusButtonMessage}
+          message={"상품을 삭제하시겠습니까?"}
+          buttonText={"삭제하기"}
           onButtonClick={handleConfirmDelete}
         />
       )}

@@ -23,7 +23,7 @@ const KAKAO_REDIRECT_URI = process.env.NEXT_PUBLIC_KAKAO_REDIRECT_URI;
 const SignUpPage = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const error = searchParams.get('error');
+  const error = searchParams.get("error");
 
   const { mutate: signUp } = useSignUp({
     onSuccess: (data: AuthResponse) => {
@@ -32,7 +32,7 @@ const SignUpPage = () => {
         router.replace("/signin");
       }, 1000);
     },
-    onError: (error:  AxiosError | any) => {
+    onError: (error: AxiosError | any) => {
       toast.error(
         error?.response?.data?.message ||
           "회원가입에 실패했습니다. 다시 시도해 주세요."
@@ -53,10 +53,10 @@ const SignUpPage = () => {
     signUp(data);
   };
 
-  if (error === 'oauth') {
-    return <ErrorPage/>;
+  if (error === "oauth") {
+    return <ErrorPage />;
   }
-  
+
   return (
     <>
       <div
@@ -65,7 +65,7 @@ const SignUpPage = () => {
         <div className="max-w-[440px] md:max-w-[640px] w-full pt-[93px] pb-[93px] mx-auto min-h-[100dvh] flex justify-center items-center">
           <div className="w-full px-[20px] lg:px-[0px]">
             <div className="flex justify-center items-center mb-[25px]">
-              <Link href="/" >
+              <Link href="/">
                 <Image
                   src={login_logo}
                   width={193}
@@ -129,7 +129,15 @@ const SignUpPage = () => {
               </BaseButton>
             </form>
             <div className="text-[var(--color-deepGray)] mt-[40px] text-center text-base">
-              <span>이미 회원이신가요? <Link href="/signin" className="hover:text-[var(--color-white)]">로그인</Link></span>
+              <span>
+                이미 회원이신가요?{" "}
+                <Link
+                  href="/signin"
+                  className="hover:text-[var(--color-white)]"
+                >
+                  로그인
+                </Link>
+              </span>
             </div>
             {/* <div className="text-[var(--color-deepGray)] mt-[20px] text-center text-base">
               <ul className="flex justify-center gap-5 mt-[19px]">

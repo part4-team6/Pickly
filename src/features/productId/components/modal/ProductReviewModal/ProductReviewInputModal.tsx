@@ -3,12 +3,11 @@ import { useRef, useState, useEffect, useCallback } from "react";
 import Image from "next/image";
 import toast from "react-hot-toast";
 
-import { TextboxReview } from "./TextboxReview";
+import { TextboxReview } from "@/features/productId/components/modal/ProductReviewModal/TextboxReview";
 import { imageService } from "@/features/productId/api";
+import ImageDelete from "@/../public/icons/image-delete.png";
+import PlusImage from "@/../public/icons/plus-image.png";
 import { checkLoginStatus } from "@/features/productId/hooks/checkLogin";
-
-import ImageDelete from "../../../../../../public/icons/image-delete.png";
-import PlusImage from "../../../../../../public/icons/plus-image.png";
 
 interface ImageData {
   id: string;
@@ -124,8 +123,7 @@ export default function ProductReviewInputModal({
         value={text}
         onChange={handleTextChange}
         maxLength={500}
-        showCharCount={true}
-        className="md:h-[150px] h-[120px] lg:w-[540px] md:w-[510px] w-[295px] text-[16px]"
+        className="md:h-[150px] h-[120px] lg:w-[540px] md:w-[510px] w-[295px]  text-[16px]"
       />
 
       {/* 이미지 업로드 섹션 */}

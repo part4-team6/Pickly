@@ -9,12 +9,9 @@ import useGetUser from "../../hooks/useGetUser";
 
 import useModalStore from "@/features/home/modals/store/modalStore";
 
-const BaseButton = dynamic(() => import("@/components/shared/BaseButton"), {
-  ssr: false,
-});
-const TypeButton = dynamic(() => import("@/components/shared/TypeButton"), {
-  ssr: false,
-});
+import BaseButton from "@/components/shared/BaseButton";
+import TypeButton from "@/components/shared/TypeButton";
+
 const AddEditProductModal = dynamic(
   () => import("@/components/shared/AddEditProductModal"),
   {
@@ -43,17 +40,21 @@ const ProductComparePlusModal = dynamic(
     loading: () => null,
   }
 );
-type ModalTypes = "review" | "compare" | "comparePlus" | "editProduct";
 
+type ModalTypes = "review" | "compare" | "comparePlus" | "editProduct";
+type ModalAction = "login" | "goCompare" | "close";
 export default function ProductIdDetailButton({
   product,
 }: {
   product: GetProductIdDetail;
 }) {
   // useGetUser 훅을 사용하여 현재 사용자 정보를 가져옴
-
   const { user, compareList, addToCompare } = useGetUser();
   const [isOwner, setIsOwner] = useState(false);
+  const [modal, setModal] = useState<ModalTypes | null>(null);
+
+  const { setName, setDescription, setImage, setClickedValue, setIsModalOpen } =
+    useModalStore();
 
   useEffect(() => {
     const checkOwner = async () => {
@@ -75,12 +76,11 @@ export default function ProductIdDetailButton({
   }, [compareList, product?.category?.id]);
 
   //  ProductComparePlusModal 관련 상태
-  const [comparePlusModalMessage, setComparePlusModalMessage] = useState("");
-  const [comparePlusButtonMessage, setComparePlusButtonMessage] = useState("");
-  const [modal, setModal] = useState<ModalTypes | null>(null);
-
-  const { setName, setDescription, setImage, setClickedValue, setIsModalOpen } =
-    useModalStore();
+  const [comparePlusModal, setComparePlusModal] = useState({
+    message: "",
+    buttonText: "",
+    action: "close" as ModalAction,
+  });
 
   const openModal = (modalName: ModalTypes) => setModal(modalName);
 
@@ -103,8 +103,12 @@ export default function ProductIdDetailButton({
     const { isLoggedIn, accessToken } = await checkLoginStatus();
 
     if (!isLoggedIn || !accessToken) {
-      setComparePlusModalMessage("로그인이 필요한 서비스입니다.");
-      setComparePlusButtonMessage("로그인하러가기");
+      setComparePlusModal({
+        message: "로그인이 필요한 서비스입니다.",
+        buttonText: "로그인하러가기",
+        action: "login",
+      });
+
       openModal("comparePlus");
 
       return false;
@@ -112,28 +116,48 @@ export default function ProductIdDetailButton({
     return true;
   };
   // 비교하기 모달
+  // 이미 비교 목록에 있는 상품인지 확인
+  const showAlreadyInListModal = () => {
+    setComparePlusModal({
+      message: "이미 비교 목록에 있는 \n상품입니다.",
+      buttonText: "확인",
+      action: "close",
+    });
+    openModal("comparePlus");
+  };
+  // 비교 상품으로 등록되었을 때 모달
+  const showCompareAddedModal = () => {
+    setComparePlusModal({
+      message: "비교 상품으로 등록되었습니다!",
+      buttonText: "확인",
+      action: "close",
+    });
+    openModal("comparePlus");
+  };
+
+  // 비교 상품으로 등록되었을 때 모달
+  const showComparePlusModal = () => {
+    setComparePlusModal({
+      message: "비교 상품으로 등록되었습니다.\n바로 확인해 보시겠어요?",
+      buttonText: "확인하러가기",
+      action: "goCompare",
+    });
+    openModal("comparePlus");
+  };
   const handleCompareClick = () => {
     const isAlreadyInList = sameCategoryCompareList.some(
       (item) => Number(item.id) === Number(product.id)
     );
-
     if (isAlreadyInList) {
-      setComparePlusModalMessage("이미 비교 목록에 있는 \n상품입니다.");
-      openModal("comparePlus");
+      showAlreadyInListModal();
       return;
     }
-
     if (sameCategoryCompareList.length === 0) {
       addToCompare(product);
-      setComparePlusModalMessage("비교 상품으로 등록되었습니다!");
-      openModal("comparePlus");
+      showCompareAddedModal();
     } else if (sameCategoryCompareList.length === 1) {
       addToCompare(product);
-      setComparePlusModalMessage(
-        "비교 상품으로 등록되었습니다.\n바로 확인해 보시겠어요?"
-      );
-      setComparePlusButtonMessage("확인하러가기");
-      openModal("comparePlus");
+      showComparePlusModal();
     } else {
       openModal("compare");
     }
@@ -208,12 +232,12 @@ export default function ProductIdDetailButton({
         <ProductComparePlusModal
           open
           setOpen={closeModal}
-          message={comparePlusModalMessage}
-          buttonText={comparePlusButtonMessage}
+          message={comparePlusModal.message}
+          buttonText={comparePlusModal.buttonText}
           onButtonClick={
-            comparePlusButtonMessage === "로그인하러가기"
+            comparePlusModal.action === "login"
               ? handleLoginRedirect
-              : comparePlusButtonMessage === "확인하러가기"
+              : comparePlusModal.action === "goCompare"
               ? handleCompareRedirect
               : undefined
           }

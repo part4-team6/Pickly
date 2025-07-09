@@ -7,7 +7,7 @@ import { useGetProductId } from "@/features/productId/hooks/useGetProductId";
 import useGetUser from "../../../hooks/useGetUser";
 import ModalProductName from "../ModalProductName";
 import BaseButton from "@/components/shared/BaseButton";
-import CloseX from "../../../../../../public/icons/close-x.png";
+import CloseX from "@/../public/icons/close-x.png";
 
 interface ProductCompareChangeModalProps {
   open: boolean;

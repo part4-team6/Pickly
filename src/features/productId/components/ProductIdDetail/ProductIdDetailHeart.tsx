@@ -9,8 +9,8 @@ import { checkLoginStatus } from "../../hooks/checkLogin";
 import { productService } from "../../api";
 import ProductComparePlusModal from "@/components/shared/ProductComparePlusModal";
 
-import HeartInactive from "../../../../../public/icons/heart-inactive.svg";
-import HeartActive from "../../../../../public/icons/heart-active.svg";
+import HeartInactive from "@/../public/icons/heart-inactive.svg";
+import HeartActive from "@/../public/icons/heart-active.svg";
 
 export default function ProductIdDetailHeart({
   productId,
@@ -26,38 +26,43 @@ export default function ProductIdDetailHeart({
 
   const { favoriteCount, setFavoriteCount } = useProductIDStatsStore();
 
+  // 상품 찜하기 기능
+  const likeProduct = async (productId: number, accessToken: string) => {
+    const res = await productService.postProductsFavorite(
+      productId,
+      accessToken
+    );
+    setIsLiked(true);
+    setFavoriteCount(productId, (favoriteCount[productId] ?? 0) + 1);
+    setIsLiked(res.data.isFavorite);
+  };
+
+  // 상품 찜 취소 기능
+  const unlikeProduct = async (productId: number, accessToken: string) => {
+    setIsLiked(false);
+    const res = await productService.deleteProductsFavorite(
+      productId,
+      accessToken
+    );
+    setFavoriteCount(
+      productId,
+      Math.max((favoriteCount[productId] ?? 0) - 1, 0)
+    );
+    setIsLiked(res.data.isFavorite);
+  };
+
+  // 찜하기 버튼 클릭 핸들러
   const handleLike = async () => {
     const { isLoggedIn, accessToken } = await checkLoginStatus();
     if (!isLoggedIn) {
       setShowLoginModal(true);
       return;
     }
-
-    try {
-      if (!isLiked) {
-        const res = await productService.postProductsFavorite(
-          productId,
-          accessToken ?? ""
-        );
-
-        setFavoriteCount(productId, (favoriteCount[productId] ?? 0) + 1);
-        setIsLiked(res.data.isFavorite);
-      } else {
-        const res = await productService.deleteProductsFavorite(
-          productId,
-          accessToken ?? ""
-        );
-        setFavoriteCount(
-          productId,
-          Math.max((favoriteCount[productId] ?? 0) - 1, 0)
-        );
-        setIsLiked(res.data.isFavorite);
-      }
-    } catch (error) {
-      console.error("좋아요 에러:", error);
-    }
+    if (!isLiked) await likeProduct(productId, accessToken ?? "");
+    else await unlikeProduct(productId, accessToken ?? "");
   };
 
+  // 로그인 상태 확인 후 찜 상태 불러오기
   useEffect(() => {
     const fetchFavoriteStatus = async () => {
       const { isLoggedIn, accessToken } = await checkLoginStatus();

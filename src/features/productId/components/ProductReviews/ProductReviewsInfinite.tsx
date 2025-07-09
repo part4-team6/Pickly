@@ -26,7 +26,6 @@ export default function ProductReviewsInfinite({
   order,
 }: ProductIdReviewProps) {
   const ref = useRef(null);
-
   // useInfiniteQuery를 사용하여 무한 스크롤 구현
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useInfiniteQuery<
@@ -71,7 +70,7 @@ export default function ProductReviewsInfinite({
     return () => observer.disconnect();
   }, [ref, hasNextPage, isFetchingNextPage, order]);
 
-  const allReviews = data?.pages.flatMap((page) => page.list) ?? [];
+  const allReviews = data?.pages.flatMap((page) => page?.list ?? []) ?? [];
   if (allReviews.length === 0) {
     return (
       <div className="text-center text-[#6E6E82] md:pt-[200px] pt-[100px] text-[16px] lg:text-[20px] font-medium">

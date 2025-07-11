@@ -11,7 +11,6 @@ export const metadata = {
       "Discover and compare curated products trusted by real users. Experience the next generation of product discovery.",
     siteName: "Pickly",
     url: "https://pickly.vercel.app",
-    locale: "en_US",
     type: "website",
     images: [
       {
